@@ -210,11 +210,17 @@ def join_words(words: Sequence[dict], lang: str) -> str:
     return " ".join(w["t"] for w in words)
 
 
+_LIMITS = {
+    "ko": (40, 10, 6000),   # 韓文音節較寬，一行約 20 字
+    "ja": (42, 8, 6000),
+    "zh": (42, 8, 6000),
+    "th": (56, 10, 6000),
+}
+
+
 def _limits(lang: str) -> tuple[int, int, int]:
     """(單句最大字數, 最小字數, 最大毫秒)"""
-    if lang in NO_SPACE_LANGS:
-        return 42, 8, 6000
-    return 84, 20, 6500
+    return _LIMITS.get(lang, (84, 20, 6500))
 
 
 def _clean(text: str, lang: str) -> str:
@@ -504,8 +510,8 @@ ScaledBorderAndShadow: yes
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Dual,PingFang TC,58,&H00FFFFFF,&H000000FF,&H00101010,&H80000000,-1,0,0,0,100,100,0,0,1,3.4,1.8,2,80,80,72,1
-Style: Orig,PingFang TC,40,&H00E6E6E6,&H000000FF,&H00101010,&H80000000,0,0,0,0,100,100,0,0,1,3,1.4,2,80,80,72,1
+Style: Dual,PingFang TC,58,&H004DD8FF,&H000000FF,&H00101010,&H80000000,-1,0,0,0,100,100,0,0,1,3.4,1.8,2,80,80,72,1
+Style: Orig,PingFang TC,40,&H00C9EFFF,&H000000FF,&H00101010,&H80000000,0,0,0,0,100,100,0,0,1,3,1.4,2,80,80,72,1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text

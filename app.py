@@ -274,7 +274,7 @@ def aai_submit(job: dict, key: str, audio_url: str, src_lang: str) -> str:
         "format_text": True,
         "speaker_labels": False,
     }
-    if src_lang in ("en", "ja"):
+    if src_lang in ("en", "ja", "ko"):
         payload["language_code"] = src_lang
     else:
         payload["language_detection"] = True
@@ -369,7 +369,8 @@ def run_pipeline(job: dict, req: dict) -> None:
         data = aai_wait(job, key, tid, meta["duration"] or 600)
 
         detected = data.get("language_code") or (src if src != "auto" else "en")
-        if src in ("en", "ja") and detected and detected.split("_")[0] != src:
+        lang_code = detected.split("_")[0]
+        if src in ("en", "ja", "ko") and detected and lang_code != src:
             _log(job, f"注意：偵測到的語言是 {detected}，與指定語言不同", "warn")
 
         # 5 切句
@@ -385,12 +386,12 @@ def run_pipeline(job: dict, req: dict) -> None:
             if (w.get("text") or "").strip()
         ]
         if words:
-            cues = subs.segment(words, detected)
+            cues = subs.segment(words, lang_code)
         else:
             cues = subs.cues_from_text(
                 data.get("text") or "",
                 int((data.get("audio_duration") or meta["duration"] or 60) * 1000),
-                detected,
+                lang_code,
             )
             _log(job, "此語言沒有詞級時間戳，改用句子均分時間", "warn")
         if not cues:
@@ -412,14 +413,14 @@ def run_pipeline(job: dict, req: dict) -> None:
         def on_progress(done: int, total: int) -> None:
             _set(job, progress=92 + 6.5 * (done / max(1, total)))
 
-        trans, warnings = subs.translate_texts(texts, detected.split("_")[0], target, on_progress)
+        trans, warnings = subs.translate_texts(texts, lang_code, target, on_progress)
         for w in warnings:
             _log(job, w, "warn")
         subs.apply_translations(cues, texts, trans)
 
         title_trans = ""
         try:
-            tt, _ = subs.translate_texts([meta["title"]], detected.split("_")[0], target)
+            tt, _ = subs.translate_texts([meta["title"]], lang_code, target)
             title_trans = tt[0] if tt else ""
         except Exception:
             pass

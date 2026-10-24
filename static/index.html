@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>TubeTranscript · 雙語動態字幕</title>
-<link rel="stylesheet" href="/static/style.css?v=2">
+<link rel="stylesheet" href="/static/style.css?v=3">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%235b5bd6'/><path d='M39 30l32 20-32 20z' fill='white'/></svg>">
 </head>
 <body>
@@ -37,10 +37,11 @@
       AssemblyAI 詞級時間軸 · 逐字同步
     </div>
     <h1>貼上 YouTube 網址<br><span class="grad">產生雙語動態字幕</span></h1>
-    <p class="hero-sub">自動辨識英文或日文語音，輸出中英／中日對照字幕。播放時原文逐字高亮，可匯出 SRT、ASS、VTT。</p>
+    <p class="hero-sub">自動辨識英文、日文或韓文語音，輸出中英／中日／中韓對照字幕。播放時原文逐字高亮，可匯出 SRT、ASS、VTT。</p>
     <div class="hero-chips">
       <span><b>EN</b> 英文 → 中文</span>
       <span><b>JA</b> 日文 → 中文</span>
+      <span><b>KO</b> 韓文 → 中文</span>
       <span><b>繁</b> 繁體 / 簡體</span>
       <span><b>⤓</b> 字幕檔匯出</span>
     </div>
@@ -96,6 +97,7 @@
           <option value="auto">自動偵測</option>
           <option value="en">英文 English</option>
           <option value="ja">日文 日本語</option>
+          <option value="ko">韓文 한국어</option>
         </select>
       </div>
 
@@ -266,6 +268,6 @@
   <div class="drawer-body" id="historyList"></div>
 </aside>
 
-<script src="/static/app.js?v=2"></script>
+<script src="/static/app.js?v=3"></script>
 </body>
 </html>
