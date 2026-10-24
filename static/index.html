@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TubeTranscript · 雙語動態字幕</title>
+<link rel="stylesheet" href="/static/style.css?v=2">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%235b5bd6'/><path d='M39 30l32 20-32 20z' fill='white'/></svg>">
+</head>
+<body>
+<div class="aurora" aria-hidden="true"></div>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">
+      <svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor"><path d="M8 5.2v13.6L19 12z"/></svg>
+    </div>
+    <div class="brand-text">
+      <span class="brand-name">TubeTranscript</span>
+      <span class="brand-sub">雙語字幕工作室</span>
+    </div>
+  </div>
+  <div class="top-actions">
+    <span class="pill" id="envPill"><i class="dot"></i>檢查環境…</span>
+    <button class="ghost-btn" id="historyBtn">
+      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M3.2 12a8.8 8.8 0 1 0 2.9-6.6"/><path d="M3 4.4v4.8h4.8"/><path d="M12 8.2v4.1l3 1.8"/></svg>
+      最近紀錄
+    </button>
+  </div>
+</header>
+
+<main>
+  <!-- ================= 標題區 ================= -->
+  <section class="hero">
+    <div class="hero-badge">
+      <span class="spark"></span>
+      AssemblyAI 詞級時間軸 · 逐字同步
+    </div>
+    <h1>貼上 YouTube 網址<br><span class="grad">產生雙語動態字幕</span></h1>
+    <p class="hero-sub">自動辨識英文或日文語音，輸出中英／中日對照字幕。播放時原文逐字高亮，可匯出 SRT、ASS、VTT。</p>
+    <div class="hero-chips">
+      <span><b>EN</b> 英文 → 中文</span>
+      <span><b>JA</b> 日文 → 中文</span>
+      <span><b>繁</b> 繁體 / 簡體</span>
+      <span><b>⤓</b> 字幕檔匯出</span>
+    </div>
+  </section>
+
+  <!-- ================= 輸入 ================= -->
+  <section class="card input-card" id="inputCard">
+    <div class="card-head">
+      <div class="head-icon">
+        <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M10.6 13.4a4.6 4.6 0 0 0 6.5.4l2.4-2.4a4.6 4.6 0 0 0-6.5-6.5l-1.4 1.4"/><path d="M13.4 10.6a4.6 4.6 0 0 0-6.5-.4l-2.4 2.4a4.6 4.6 0 0 0 6.5 6.5l1.4-1.4"/></svg>
+      </div>
+      <div class="head-text">
+        <h2>開始產生字幕</h2>
+        <p>支援 YouTube 影片、Shorts、直播存檔連結</p>
+      </div>
+    </div>
+
+    <div class="url-row">
+      <div class="url-input">
+        <span class="yt-mark">
+          <svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor"><path d="M21.6 7.2a2.5 2.5 0 0 0-1.8-1.8C18.2 5 12 5 12 5s-6.2 0-7.8.4A2.5 2.5 0 0 0 2.4 7.2 26 26 0 0 0 2 12a26 26 0 0 0 .4 4.8 2.5 2.5 0 0 0 1.8 1.8C5.8 19 12 19 12 19s6.2 0 7.8-.4a2.5 2.5 0 0 0 1.8-1.8A26 26 0 0 0 22 12a26 26 0 0 0-.4-4.8zM10 15.2V8.8l5.2 3.2z"/></svg>
+        </span>
+        <input id="url" type="url" spellcheck="false" autocomplete="off" placeholder="https://www.youtube.com/watch?v=…">
+        <button class="clear-btn" id="clearUrl" hidden aria-label="清除">×</button>
+        <button class="paste-btn" id="pasteBtn" type="button">貼上</button>
+      </div>
+      <button class="primary-btn" id="runBtn">
+        <span class="btn-label">產生字幕</span>
+        <svg class="btn-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+        <span class="spinner" hidden></span>
+      </button>
+    </div>
+
+    <div class="options">
+      <div class="field key-field">
+        <label for="key">AssemblyAI API Key</label>
+        <div class="key-wrap">
+          <input id="key" type="password" spellcheck="false" autocomplete="off" placeholder="貼上你的 API Key">
+          <button class="eye" id="toggleKey" aria-label="顯示 Key">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6-10-6-10-6z"/><circle cx="12" cy="12" r="2.6"/></svg>
+          </button>
+        </div>
+        <div class="field-foot">
+          <label class="check"><input type="checkbox" id="rememberKey" checked> 記住</label>
+          <button class="link-btn" id="verifyKey" type="button">驗證 Key</button>
+          <span class="key-status" id="keyStatus"></span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="srcLang">來源語言</label>
+        <select id="srcLang">
+          <option value="auto">自動偵測</option>
+          <option value="en">英文 English</option>
+          <option value="ja">日文 日本語</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="targetLang">中文字幕</label>
+        <select id="targetLang">
+          <option value="zh-TW">繁體中文</option>
+          <option value="zh-CN">簡體中文</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="adv">
+      <button class="adv-toggle" id="advToggle" type="button">
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+        進階選項
+      </button>
+      <div class="adv-body" id="advBody" hidden>
+        <div class="field">
+          <label for="cookies">瀏覽器 cookies（遇到「需要登入驗證」時使用）</label>
+          <select id="cookies">
+            <option value="">不使用</option>
+            <option value="chrome">Chrome</option>
+            <option value="safari">Safari</option>
+            <option value="edge">Edge</option>
+            <option value="firefox">Firefox</option>
+            <option value="brave">Brave</option>
+          </select>
+        </div>
+        <p class="hint">音訊會轉成 16kHz 單聲道 mp3 上傳，處理完立即刪除。API Key 只用於本次請求，不會寫入伺服器檔案。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 進度 ================= -->
+  <section class="card progress-card" id="progressCard" hidden>
+    <div class="progress-head">
+      <div class="job-title" id="jobTitle">處理中…</div>
+      <div class="progress-pct" id="progressPct">0%</div>
+    </div>
+    <div class="bar"><div class="bar-fill" id="barFill"></div></div>
+    <ol class="stepper" id="steps"></ol>
+    <div class="logs" id="logs"></div>
+    <div class="error-box" id="errorBox" hidden></div>
+  </section>
+
+  <!-- ================= 結果 ================= -->
+  <section class="result" id="result" hidden>
+    <div class="result-head">
+      <img class="r-thumb" id="rThumb" alt="" hidden>
+      <div class="titles">
+        <h2 id="rTitle"></h2>
+        <p id="rTitleTrans"></p>
+      </div>
+      <div class="meta" id="rMeta"></div>
+    </div>
+
+    <div class="workspace">
+      <div class="player-col">
+        <div class="stage" id="stage">
+          <div id="ytplayer"></div>
+          <div class="subs" id="subs">
+            <div class="sub-orig" id="subOrig"></div>
+            <div class="sub-trans" id="subTrans"></div>
+          </div>
+          <div class="stage-msg" id="stageMsg" hidden></div>
+        </div>
+
+        <div class="controls">
+          <div class="seg" id="modeSeg">
+            <button data-mode="both" class="on">雙語</button>
+            <button data-mode="orig">原文</button>
+            <button data-mode="trans">譯文</button>
+          </div>
+
+          <div class="ctrl-group">
+            <span class="ctrl-label">字級</span>
+            <div class="seg small" id="sizeSeg">
+              <button data-size="0.82">A</button>
+              <button data-size="1" class="on">A</button>
+              <button data-size="1.24">A</button>
+            </div>
+          </div>
+
+          <div class="ctrl-group">
+            <span class="ctrl-label">延遲</span>
+            <input type="range" id="offset" min="-1.5" max="1.5" step="0.1" value="0">
+            <span class="ctrl-val" id="offsetVal">0.0s</span>
+          </div>
+
+          <div class="ctrl-spacer"></div>
+
+          <button class="icon-btn" id="fsBtn" title="全螢幕">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
+          </button>
+        </div>
+
+        <div class="export">
+          <div class="export-label">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M12 3v12M7 11l5 5 5-5M4 20h16"/></svg>
+            下載字幕檔
+          </div>
+          <div class="export-btns" id="exportBtns">
+            <button data-fmt="srt" data-mode="both" class="export-btn primary">SRT 雙語</button>
+            <button data-fmt="srt" data-mode="orig" class="export-btn">SRT 原文</button>
+            <button data-fmt="srt" data-mode="trans" class="export-btn">SRT 譯文</button>
+            <button data-fmt="ass" data-mode="both" class="export-btn">ASS</button>
+            <button data-fmt="vtt" data-mode="both" class="export-btn">VTT</button>
+            <button data-fmt="txt" data-mode="both" class="export-btn">TXT</button>
+          </div>
+          <button class="ghost-btn copy-btn" id="copyAll">複製全文</button>
+        </div>
+      </div>
+
+      <aside class="side">
+        <div class="side-head">
+          <span>字幕列表</span>
+          <span class="count" id="cueCount"></span>
+        </div>
+        <div class="search-wrap">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
+          <input id="search" placeholder="搜尋字幕…" spellcheck="false">
+        </div>
+        <div class="cue-list" id="cueList"></div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ================= 空狀態 ================= -->
+  <section class="empty-state" id="emptyState">
+    <div class="flow">
+      <div class="flow-item">
+        <span class="flow-num">01</span>
+        <h3>貼上網址</h3>
+        <p>YouTube 影片連結，長度不拘</p>
+      </div>
+      <div class="flow-line"></div>
+      <div class="flow-item">
+        <span class="flow-num">02</span>
+        <h3>AssemblyAI 辨識</h3>
+        <p>取得逐字時間戳，誤差在毫秒級</p>
+      </div>
+      <div class="flow-line"></div>
+      <div class="flow-item">
+        <span class="flow-num">03</span>
+        <h3>雙語字幕</h3>
+        <p>線上跟讀，或匯出字幕檔</p>
+      </div>
+    </div>
+    <p class="empty-note">第一次使用？到 <a href="https://www.assemblyai.com/dashboard/signup" target="_blank" rel="noopener">AssemblyAI</a> 註冊即可取得免費 API Key。</p>
+  </section>
+
+  <footer class="foot">
+    <span>本機執行 · 音訊處理完立即刪除</span>
+    <span class="sep">·</span>
+    <span>時間軸來自 AssemblyAI 詞級時間戳</span>
+  </footer>
+</main>
+
+<div class="drawer-mask" id="drawerMask" hidden></div>
+<aside class="drawer" id="drawer" hidden>
+  <div class="drawer-head">
+    <h3>最近完成</h3>
+    <button class="icon-btn" id="drawerClose" aria-label="關閉">
+      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+  <div class="drawer-body" id="historyList"></div>
+</aside>
+
+<script src="/static/app.js?v=2"></script>
+</body>
+</html>

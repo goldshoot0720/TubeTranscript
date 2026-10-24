@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# 執行產生的資料（含影片結果與翻譯快取）
+jobs/
+.cache/
+
+# macOS
+.DS_Store
+
+# 工具設定
+.workbuddy-ai/
+.vscode/
+.idea/
