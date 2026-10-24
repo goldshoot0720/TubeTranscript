@@ -119,10 +119,11 @@ function init() {
     $("#offsetVal").textContent = `${state.offset > 0 ? "+" : ""}${state.offset.toFixed(1)}s`;
   });
 
-  $("#fsBtn").addEventListener("click", () => {
-    const stage = $("#stage");
-    if (document.fullscreenElement) document.exitFullscreen();
-    else stage.requestFullscreen?.();
+  $("#fsBtn").addEventListener("click", toggleFullscreen);
+  document.addEventListener("fullscreenchange", () => {
+    const on = document.fullscreenElement === $("#stage");
+    $("#fsBtn").classList.toggle("on", on);
+    $("#fsBtn").title = on ? "離開全螢幕（F）" : "全螢幕（F）";
   });
 
   $("#exportBtns").addEventListener("click", (e) => {
@@ -472,6 +473,7 @@ async function initPlayer(video) {
         modestbranding: 1,
         playsinline: 1,
         enablejsapi: 1,
+        fs: 0,
         origin: window.location.origin,
       },
       events: {
@@ -612,6 +614,16 @@ function markActive(i) {
   }
 }
 
+function toggleFullscreen() {
+  const stage = $("#stage");
+  if (document.fullscreenElement) {
+    document.exitFullscreen();
+    return;
+  }
+  if (stage.requestFullscreen) stage.requestFullscreen().catch(() => {});
+  else if (stage.webkitRequestFullscreen) stage.webkitRequestFullscreen();
+}
+
 /* ------------------------------------------------------------ 快捷鍵 */
 
 function onKey(e) {
@@ -635,6 +647,9 @@ function onKey(e) {
   } else if (e.key === "ArrowUp") {
     const i = Math.max(0, (state.cueIdx < 0 ? 1 : state.cueIdx) - 1);
     seekTo(state.data.cues[i].start);
+  } else if (e.key === "f" || e.key === "F") {
+    e.preventDefault();
+    toggleFullscreen();
   }
 }
 

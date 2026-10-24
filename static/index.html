@@ -4,7 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>TubeTranscript · 雙語動態字幕</title>
-<link rel="stylesheet" href="/static/style.css?v=6">
+<link rel="stylesheet" href="/static/style.css?v=8">
+<style>
+  /* 字幕位置：固定在播放器底部控制列（時間軸）之上 */
+  .subs { bottom: max(96px, 18%); }
+  .stage:fullscreen .subs { bottom: max(120px, 13%); }
+  @media (max-width: 680px) { .subs { bottom: max(80px, 20%); } }
+</style>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%235b5bd6'/><path d='M39 30l32 20-32 20z' fill='white'/></svg>">
 </head>
 <body>
@@ -190,7 +196,7 @@
 
           <div class="ctrl-spacer"></div>
 
-          <button class="icon-btn" id="fsBtn" title="全螢幕">
+          <button class="icon-btn" id="fsBtn" title="全螢幕（F）">
             <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
           </button>
         </div>
@@ -268,6 +274,6 @@
   <div class="drawer-body" id="historyList"></div>
 </aside>
 
-<script src="/static/app.js?v=6"></script>
+<script src="/static/app.js?v=8"></script>
 </body>
 </html>
