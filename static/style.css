@@ -438,6 +438,50 @@ select {
 @keyframes fadeDown { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
 .hint { margin: 0; font-size: 11.5px; color: var(--muted-2); line-height: 1.65; }
 
+/* ---------------------------------------------------------------- 用量 */
+
+.usage {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+  padding: 11px 18px;
+  background: rgba(255, 255, 255, .72);
+  border: 1px solid var(--line);
+  border-radius: 13px;
+}
+.usage-stat { display: flex; align-items: baseline; gap: 7px; }
+.usage-k { font-size: 11px; color: var(--muted-2); }
+.usage-v { font-size: 12.5px; color: var(--ink-2); }
+.usage-v b { font-size: 14px; font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
+.usage-set {
+  border: 0;
+  background: none;
+  padding: 0;
+  font-size: 10.5px;
+  color: var(--accent);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-color: #c8c4f5;
+}
+.usage-set:hover { text-decoration-color: var(--accent); }
+.usage-note { font-size: 10.5px; color: var(--muted-2); }
+.usage-link {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+}
+.usage-link:hover { text-decoration: none; color: #4338ca; }
+.usage-link svg { transition: transform .15s; }
+.usage-link:hover svg { transform: translate(1px, -1px); }
+
 /* ---------------------------------------------------------------- 進度 */
 
 .progress-card { margin-top: 14px; padding: 20px 24px 18px; }
@@ -642,7 +686,7 @@ body.has-result .hero { display: none; }
 .subs {
   position: absolute;
   left: 50%;
-  bottom: 10.5%;
+  bottom: clamp(64px, 14%, 100px);
   transform: translateX(-50%);
   width: 88%;
   text-align: center;
@@ -1039,7 +1083,7 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.12); }
   .options { grid-template-columns: 1fr; }
   .result-head { flex-direction: column; gap: 8px; }
   .meta { justify-content: flex-start; }
-  .subs { width: 92%; bottom: 12%; }
+  .subs { width: 92%; bottom: clamp(56px, 16%, 84px); }
   .sub-orig { font-size: calc(13.5px * var(--scale)); }
   .sub-trans { font-size: calc(17.5px * var(--scale)); }
   .flow { flex-direction: column; align-items: flex-start; gap: 14px; }

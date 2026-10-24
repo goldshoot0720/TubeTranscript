@@ -133,6 +133,7 @@ function init() {
 
   $("#copyAll").addEventListener("click", copyAll);
   $("#search").addEventListener("input", debounce(applyFilter, 140));
+  $("#uBalSet").addEventListener("click", setBalance);
 
   $("#historyBtn").addEventListener("click", openDrawer);
   $("#drawerClose").addEventListener("click", closeDrawer);
@@ -142,6 +143,7 @@ function init() {
 
   checkHealth();
   loadHistory();
+  loadUsage();
 
   const m = location.hash.match(/job=([a-f0-9]{6,})/);
   if (m) {
@@ -171,6 +173,51 @@ async function checkHealth() {
   } catch {
     pill.innerHTML = '<i class="dot"></i>服務未連線';
     pill.className = "pill bad";
+  }
+}
+
+async function loadUsage() {
+  try {
+    const u = await api("/api/usage");
+    let bal = null;
+    try { bal = JSON.parse(localStorage.getItem("tt_bal") || "null"); } catch { bal = null; }
+
+    if (!u.jobs && !bal) {
+      $("#usageStrip").hidden = true;
+      return;
+    }
+    $("#uJobs").textContent = u.jobs;
+    $("#uMin").textContent = u.minutes < 10 ? u.minutes.toFixed(1) : Math.round(u.minutes);
+    const cost = u.estimated_usd;
+    $("#uCost").textContent = cost < 0.1 ? `$${cost.toFixed(3)}` : `$${cost.toFixed(2)}`;
+
+    const balEl = $("#uBal");
+    if (bal && typeof bal.usd === "number") {
+      const spent = Math.max(0, ((u.seconds - bal.secs) / 3600) * u.rate);
+      balEl.textContent = `約 $${Math.max(0, bal.usd - spent).toFixed(2)}`;
+      $("#uBalSet").textContent = "更新";
+    } else {
+      balEl.textContent = "—";
+      $("#uBalSet").textContent = "設定";
+    }
+    $("#usageStrip").hidden = false;
+  } catch {
+    $("#usageStrip").hidden = true;
+  }
+}
+
+async function setBalance() {
+  const input = window.prompt("輸入 AssemblyAI 目前剩餘額度（USD，例如 27.3）\n之後會依本機用量自動遞減。");
+  if (input === null) return;
+  const usd = parseFloat(String(input).replace(/[^0-9.]/g, ""));
+  if (!isFinite(usd) || usd < 0) return;
+  try {
+    const u = await api("/api/usage");
+    localStorage.setItem("tt_bal", JSON.stringify({ usd, secs: u.seconds, ts: Date.now() }));
+    loadUsage();
+  } catch {
+    localStorage.setItem("tt_bal", JSON.stringify({ usd, secs: 0, ts: Date.now() }));
+    loadUsage();
   }
 }
 
@@ -365,6 +412,7 @@ async function showResult(jobId) {
 
   $("#result").scrollIntoView({ behavior: "smooth", block: "start" });
   loadHistory();
+  loadUsage();
 }
 
 function renderList() {

@@ -625,6 +625,35 @@ def health():
     return {"ok": True, "ytdlp": bool(shutil.which("yt-dlp")), "ffmpeg": bool(shutil.which("ffmpeg"))}
 
 
+# AssemblyAI 預錄語音定價（USD / 小時）：Universal-3.5 Pro 0.21、Universal-2 0.15
+RATE_PER_HOUR = 0.21
+
+
+@app.get("/api/usage")
+def usage():
+    """本機累計用量。AssemblyAI 沒有公開餘額 API，實際額度需至 Dashboard 查看。"""
+    total = 0
+    count = 0
+    for d in JOBS_DIR.iterdir() if JOBS_DIR.exists() else []:
+        f = d / "result.json"
+        if not f.exists():
+            continue
+        try:
+            data = json.loads(f.read_text("utf-8"))
+        except Exception:
+            continue
+        total += int(data.get("stats", {}).get("duration") or 0)
+        count += 1
+    return {
+        "jobs": count,
+        "seconds": total,
+        "minutes": round(total / 60, 1),
+        "rate": RATE_PER_HOUR,
+        "estimated_usd": round(total / 3600 * RATE_PER_HOUR, 4),
+        "dashboard": "https://www.assemblyai.com/dashboard",
+    }
+
+
 @app.get("/")
 def index():
     return FileResponse(STATIC_DIR / "index.html")
